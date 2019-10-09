@@ -1,0 +1,142 @@
+import React from "react";
+import swal from "sweetalert";
+import { logIn, getCurrentUser } from "../services/userService";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { connect } from "react-redux";
+import { closeModal } from "../actions/modalActions";
+import { getUser } from "../actions/userAuthActions";
+
+class Login extends React.Component {
+  handleSubmit = data => {
+    logIn(data)
+      .then(this.handleSuccess)
+      .catch(this.handleError);
+  };
+
+  handleSuccess = () => {
+    getCurrentUser().then(this.getCurrentUserSuccess);
+  };
+
+  getCurrentUserSuccess = data => {
+    console.log(data);
+    this.props.getUser(data);
+    this.props.closeModal();
+    swal({
+      title: `Log In Success`,
+      icon: "success",
+      timer: 1500
+    });
+  };
+
+  handleError = () => {
+    swal({
+      title: "Something went wrong!",
+      text: "Please Try Again",
+      dangerMode: true,
+      timer: 2000
+    });
+  };
+
+  initialValues = {
+    email: "",
+    password: ""
+  };
+  render() {
+    return (
+      <Formik
+        initialValues={this.initialValues}
+        validationSchema={Yup.object().shape({
+          email: Yup.string()
+            .email("Invalid email!")
+            .required(),
+          password: Yup.string().required("Required!")
+        })}
+        onSubmit={(values, actions) => {
+          this.handleSubmit(values);
+          actions.setSubmitting(false);
+        }}
+      >
+        {({ errors, touched, isValid, handleReset }) => (
+          <Form id="registerForm">
+            <button
+              type="button"
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+              onClick={this.props.closeModal}
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <div className="text-center">
+              <h4>Log In</h4>
+            </div>
+            <div className="col-10 mb-2 mx-auto">
+              <label htmlFor="email">Email</label>
+              <Field
+                className={
+                  "form-control form-control-sm" +
+                  (errors.email && touched.email ? " is-invalid" : "")
+                }
+                name="email"
+                type="email"
+                placeholder="you@email.com"
+              />
+              <ErrorMessage
+                name="email"
+                className="invalid-feedback"
+                component="div"
+              />
+            </div>
+            <div className="col-10 mb-2 mx-auto">
+              <label htmlFor="password">Password</label>
+              <Field
+                className={
+                  "form-control form-control-sm" +
+                  (errors.password && touched.password ? " is-invalid" : "")
+                }
+                name="password"
+                type="password"
+                placeholder="Password"
+              />
+              <ErrorMessage
+                name="password"
+                className="invalid-feedback"
+                component="div"
+              />
+            </div>
+            <div className="float-right mt-3">
+              <button
+                type="submit"
+                disabled={!isValid}
+                id="submitBtn"
+                className="btn btn-sm btn-primary"
+              >
+                Log In
+              </button>
+              <button
+                type="button"
+                id="resetBtn"
+                className="btn btn-sm btn-secondary ml-3"
+                onClick={this.props.closeModal}
+              >
+                Cancel
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  return {};
+};
+
+const matchDispatchToProps = { closeModal, getUser };
+
+export default connect(
+  mapStateToProps,
+  matchDispatchToProps
+)(Login);
