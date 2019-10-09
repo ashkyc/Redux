@@ -1,0 +1,20 @@
+import { combineReducers } from "redux";
+import { user } from "./reducer_currentUser";
+import { modal } from "./reducer_modal";
+import { pupProfile } from "./reducer_pupProfile";
+import { breeds } from "./reducer_breeds";
+import { pupProfileList } from "./reducer_pupProfileList";
+import { general } from "./reducer_general";
+import { pupProfileArray } from "./reducer_pupProfileArray";
+
+const allReducers = combineReducers({
+  user,
+  modal,
+  pupProfile,
+  pupProfileList,
+  pupProfileArray,
+  breeds,
+  general
+});
+
+export default allReducers;
