@@ -1,0 +1,21 @@
+const showModal = num => {
+  return {
+    type: "showModal",
+    payload: {
+      showModal: true,
+      modal: num
+    }
+  };
+};
+
+const closeModal = () => {
+  return {
+    type: "closeModal",
+    payload: {
+      showModal: false,
+      modal: 0
+    }
+  };
+};
+
+export { showModal, closeModal };
