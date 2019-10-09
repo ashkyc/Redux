@@ -1,0 +1,17 @@
+const initialState = {
+  showModal: false,
+  modal: 0
+};
+
+export const modal = (state = initialState, action) => {
+  switch (action.type) {
+    case "showModal":
+      return action.payload;
+
+    case "closeModal":
+      return action.payload;
+
+    default:
+      return state;
+  }
+};
